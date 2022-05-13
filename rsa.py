@@ -3,9 +3,11 @@ from math import gcd
 import socket
 import json
 def mod_inverse(e, phi):
-	for i in range(1, phi + 1):
-		if ((e*i)%phi == 1):
-			return i
+	i = 0
+	while True:
+		if ((1 + i*phi)%e == 0):
+			return int((1 + i*phi)/e)
+		i+=1
 
 def generate_keys():
 	p = int(input("p = "))
@@ -13,10 +15,12 @@ def generate_keys():
 	n = p*q
 	phi = (p-1)*(q-1)
 	print("phi = ", phi)
-	while True:
-		e = randint(2, phi)
+	e = 2
+	while e < phi:
 		if gcd(phi, e) == 1:
 			break
+		else:
+			e+=1
 	
 	d = mod_inverse(e, phi)
 	return [e, n], [d, n]
@@ -47,3 +51,4 @@ cipher = c.recv(1024).decode()
 print("cipher text received = ", cipher)
 c.close()
 print("Decrypted Text = ", decrypt(int(cipher), private_key[0], private_key[1]))
+s.close()
